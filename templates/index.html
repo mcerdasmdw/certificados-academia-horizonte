@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Horizonte - Certificados</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- ============================================================
+         ENCABEZADO - Academia Horizonte (Azul Marino y Dorado)
+         ============================================================ -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🎓</span>
+                <h1>Academia Horizonte</h1>
+            </div>
+            <p class="subtitle">Sistema de Certificados - Cohorte 2026-A</p>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- ============================================================
+             CONTADORES ARRIBA
+             ============================================================ -->
+        <section class="contadores">
+            <div class="contador aprobacion">
+                <span class="contador-numero">{{ conteos['Aprobación'] }}</span>
+                <span class="contador-label">Aprobación</span>
+            </div>
+            <div class="contador participacion">
+                <span class="contador-numero">{{ conteos['Participación'] }}</span>
+                <span class="contador-label">Participación</span>
+            </div>
+            <div class="contador sin-certificado">
+                <span class="contador-numero">{{ conteos['Sin certificado'] }}</span>
+                <span class="contador-label">Sin certificado</span>
+            </div>
+            <div class="contador total">
+                <span class="contador-numero">{{ total_resultados }}</span>
+                <span class="contador-label">Total mostrados</span>
+            </div>
+        </section>
+
+        <!-- ============================================================
+             FILTRO POR PROGRAMA
+             ============================================================ -->
+        <section class="filtro-section">
+            <form method="GET" class="filtro-form">
+                <label for="programa">Filtrar por Programa:</label>
+                <select name="programa" id="programa" onchange="this.form.submit()">
+                    <option value="todos" {% if programa_actual == 'todos' %}selected{% endif %}>
+                        Todos los programas
+                    </option>
+                    {% for prog in programas %}
+                    <option value="{{ prog }}" {% if programa_actual == prog %}selected{% endif %}>
+                        {{ prog }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </section>
+
+        <!-- ============================================================
+             TABLA DE RESULTADOS
+             ============================================================ -->
+        <section class="tabla-section">
+            <h2>Certificados por Estudiante</h2>
+            
+            {% if resultados %}
+            <div class="tabla-wrapper">
+                <table class="tabla-certificados">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Programa</th>
+                            <th>Módulos</th>
+                            <th>Promedio</th>
+                            <th>Asistencia</th>
+                            <th>Certificado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in resultados %}
+                        <tr class="fila-{% if r.en_maestro %}real{% else %}fantasma{% endif %}">
+                            <td class="col-nombre">
+                                {% if not r.en_maestro %}
+                                <span class="badge-fantasma">⚠️ FANTASMA</span>
+                                {% endif %}
+                                {{ r.nombre }}
+                            </td>
+                            <td>{{ r.programa }}</td>
+                            <td class="centrado">{{ r.modulos_cursados }}</td>
+                            <td class="centrado">{{ "%.2f"|format(r.promedio) }}</td>
+                            <td class="centrado">{{ "%.2f"|format(r.asistencia_promedio) }}%</td>
+                            <td>
+                                <span class="badge badge-{{ r.tipo_certificado|lower|replace(' ', '-')|replace('ó','o') }}">
+                                    {{ r.tipo_certificado }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="sin-resultados">No hay certificados para mostrar con el filtro actual.</p>
+            {% endif %}
+        </section>
+
+        <!-- ============================================================
+             INCONSISTENCIAS (Sección aparte)
+             ============================================================ -->
+        <section class="inconsistencias-section">
+            <h2>⚠️ Inconsistencias Detectadas</h2>
+            
+            <!-- Estudiantes en maestro SIN evaluaciones -->
+            <div class="inconsistencia-block">
+                <h3>📭 Estudiantes en Maestro SIN Evaluaciones ({{ inconsistencias.sin_evaluaciones|length }})</h3>
+                {% if inconsistencias.sin_evaluaciones %}
+                <ul class="lista-inconsistencias">
+                    {% for inc in inconsistencias.sin_evaluaciones %}
+                    <li>
+                        <strong>{{ inc.identificacion }}</strong> — {{ inc.nombre }}<br>
+                        <small>Programa: {{ inc.programa }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="sin-inconsistencias">✅ Todos los estudiantes del maestro tienen evaluaciones.</p>
+                {% endif %}
+            </div>
+
+            <!-- Identificaciones en evaluaciones SIN maestro -->
+            <div class="inconsistencia-block">
+                <h3>👻 Identificaciones en Evaluaciones SIN Maestro ({{ inconsistencias.sin_maestro|length }})</h3>
+                {% if inconsistencias.sin_maestro %}
+                <ul class="lista-inconsistencias">
+                    {% for inc in inconsistencias.sin_maestro %}
+                    <li>
+                        <strong>{{ inc.identificacion }}</strong> — {{ inc.programa }}<br>
+                        <small>Módulos: {{ inc.modulos }} | Promedio: {{ inc.promedio }} | Asistencia: {{ inc.asistencia }}%</small>
+                        <span class="badge-fantasma">FANTASMA - No emitir certificado</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="sin-inconsistencias">✅ Todas las evaluaciones tienen su estudiante en el maestro.</p>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================================================
+         PIE DE PÁGINA
+         ============================================================ -->
+    <footer class="footer">
+        <p>Academia Horizonte — Sistema de Certificados Automatizado</p>
+        <p class="footer-note">La Cocina calcula, el Salón muestra. Datos de Bodega (insumos/).</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,483 @@
+/* ============================================================
+   ESTILOS - Academia Horizonte
+   Paleta: Azul Marino (#001f3f) + Dorado (#ffd700)
+   ============================================================ */
+
+:root {
+    --azul-marino: #001f3f;
+    --azul-marino-claro: #003366;
+    --dorado: #ffd700;
+    --dorado-claro: #ffdf4d;
+    --blanco: #ffffff;
+    --gris-claro: #f5f5f5;
+    --gris-medio: #e0e0e0;
+    --gris-oscuro: #333333;
+    --verde-exito: #28a745;
+    --azul-info: #17a2b8;
+    --rojo-peligro: #dc3545;
+    --naranja-advertencia: #ffc107;
+}
+
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--gris-claro);
+    color: var(--gris-oscuro);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+    background: linear-gradient(135deg, var(--azul-marino) 0%, var(--azul-marino-claro) 100%);
+    color: var(--blanco);
+    padding: 1.5rem 2rem;
+    border-bottom: 4px solid var(--dorado);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.logo-icon {
+    font-size: 2.5rem;
+}
+
+.logo h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    color: var(--dorado);
+    font-weight: 500;
+}
+
+/* ============================================================
+   MAIN
+   ============================================================ */
+.main {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* ============================================================
+   CONTADORES
+   ============================================================ */
+.contadores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.contador {
+    background: var(--blanco);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-top: 4px solid;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.contador:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.contador-numero {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.contador-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Colores por tipo */
+.contador.aprobacion {
+    border-top-color: var(--verde-exito);
+}
+.contador.aprobacion .contador-numero {
+    color: var(--verde-exito);
+}
+
+.contador.participacion {
+    border-top-color: var(--azul-info);
+}
+.contador.participacion .contador-numero {
+    color: var(--azul-info);
+}
+
+.contador.sin-certificado {
+    border-top-color: var(--rojo-peligro);
+}
+.contador.sin-certificado .contador-numero {
+    color: var(--rojo-peligro);
+}
+
+.contador.total {
+    border-top-color: var(--azul-marino);
+}
+.contador.total .contador-numero {
+    color: var(--azul-marino);
+}
+
+/* ============================================================
+   FILTRO
+   ============================================================ */
+.filtro-section {
+    background: var(--blanco);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filtro-form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filtro-form label {
+    font-weight: 600;
+    color: var(--azul-marino);
+}
+
+.filtro-form select {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--gris-medio);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--blanco);
+    color: var(--gris-oscuro);
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-width: 280px;
+}
+
+.filtro-form select:focus {
+    outline: none;
+    border-color: var(--dorado);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+}
+
+/* ============================================================
+   TABLA
+   ============================================================ */
+.tabla-section h2 {
+    color: var(--azul-marino);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.tabla-wrapper {
+    background: var(--blanco);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+}
+
+.tabla-certificados {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.tabla-certificados th,
+.tabla-certificados td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--gris-medio);
+}
+
+.tabla-certificados th {
+    background: var(--azul-marino);
+    color: var(--blanco);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.tabla-certificados tbody tr {
+    transition: background-color 0.15s;
+}
+
+.tabla-certificados tbody tr:hover {
+    background-color: rgba(255, 215, 0, 0.1);
+}
+
+.tabla-certificados tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Fila fantasma (sin maestro) */
+.tabla-certificados tbody tr.fantasma {
+    background-color: #fff8e1;
+}
+.tabla-certificados tbody tr.fantasma:hover {
+    background-color: #ffe082;
+}
+
+.col-nombre {
+    font-weight: 500;
+    max-width: 250px;
+}
+
+.centrado {
+    text-align: center;
+}
+
+/* Badges para tipos de certificado */
+.badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.badge-aprobacion {
+    background-color: var(--verde-exito);
+    color: var(--blanco);
+}
+
+.badge-participacion {
+    background-color: var(--azul-info);
+    color: var(--blanco);
+}
+
+.badge-sin-certificado {
+    background-color: var(--rojo-peligro);
+    color: var(--blanco);
+}
+
+.badge-fantasma {
+    display: inline-block;
+    background: var(--naranja-advertencia);
+    color: var(--gris-oscuro);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+.sin-resultados {
+    text-align: center;
+    padding: 3rem;
+    color: #888;
+    font-style: italic;
+}
+
+/* ============================================================
+   INCONSISTENCIAS
+   ============================================================ */
+.inconsistencias-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--gris-medio);
+}
+
+.inconsistencias-section h2 {
+    color: var(--azul-marino);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.inconsistencia-block {
+    background: var(--blanco);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid var(--naranja-advertencia);
+}
+
+.inconsistencia-block h3 {
+    color: var(--azul-marino);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.lista-inconsistencias {
+    list-style: none;
+}
+
+.lista-inconsistencias li {
+    padding: 0.75rem;
+    background: #fffbf0;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    border: 1px solid #ffeaa7;
+}
+
+.lista-inconsistencias li:last-child {
+    margin-bottom: 0;
+}
+
+.lista-inconsistencias small {
+    color: #666;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.sin-inconsistencias {
+    color: var(--verde-exito);
+    font-weight: 500;
+    padding: 1rem;
+    background: #e8f5e9;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer {
+    background: var(--azul-marino);
+    color: var(--blanco);
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: auto;
+}
+
+.footer p {
+    opacity: 0.9;
+}
+
+.footer-note {
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-top: 0.5rem;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .header-content h1 {
+        font-size: 1.6rem;
+    }
+    
+    .main {
+        padding: 1rem;
+    }
+    
+    .contadores {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .contador-numero {
+        font-size: 2rem;
+    }
+    
+    .filtro-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filtro-form select {
+        min-width: 100%;
+    }
+    
+    .tabla-certificados th,
+    .tabla-certificados td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .contadores {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ============================================================
+   PRINT STYLES (para imprimir certificados)
+   ============================================================ */
+@media print {
+    .header, .filtro-section, .contadores, .inconsistencias-section, .footer {
+        display: none !important;
+    }
+    
+    .main {
+        padding: 0;
+        max-width: 100%;
+    }
+    
+    .tabla-wrapper {
+        box-shadow: none;
+        border-radius: 0;
+    }
+    
+    .tabla-certificados th {
+        background: var(--azul-marino) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .badge-aprobacion {
+        background: var(--verde-exito) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .badge-participacion {
+        background: var(--azul-info) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .badge-sin-certificado {
+        background: var(--rojo-peligro) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
