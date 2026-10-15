@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Registro académico y emisión de certificados de Academia Horizonte">
+    <title>Registro de certificados | Academia Horizonte</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <header class="masthead">
+        <div class="masthead__rule"></div>
+        <div class="shell masthead__inner">
+            <div class="brand" aria-label="Academia Horizonte">
+                <span class="brand__seal" aria-hidden="true">AH</span>
+                <div>
+                    <p class="brand__name">Academia Horizonte</p>
+                    <p class="brand__office">Registro académico</p>
+                </div>
+            </div>
+            <div class="masthead__context">
+                <span>Sistema de certificados</span>
+                <strong>Cohorte 2026-A</strong>
+            </div>
+        </div>
+    </header>
+
+    <main class="shell page" id="contenido">
+        <section class="page-heading" aria-labelledby="titulo-pagina">
+            <div>
+                <p class="page-heading__kicker">Control de cierre de cohorte</p>
+                <h1 id="titulo-pagina">Certificados de estudiantes</h1>
+                <p class="page-heading__intro">Consulta los resultados calculados y revisa las incidencias antes de emitir certificados.</p>
+            </div>
+            <div class="page-heading__status">
+                <span class="status-dot" aria-hidden="true"></span>
+                Datos cargados correctamente
+            </div>
+        </section>
+
+        <section class="summary" aria-label="Resumen de resultados">
+            <article class="summary__item summary__item--success">
+                <span class="summary__number">{{ conteos['Aprobación'] }}</span>
+                <div><strong>Aprobación</strong><small>Promedio ≥ 70 y asistencia ≥ 80%</small></div>
+            </article>
+            <article class="summary__item summary__item--info">
+                <span class="summary__number">{{ conteos['Participación'] }}</span>
+                <div><strong>Participación</strong><small>Promedio &lt; 70 y asistencia ≥ 80%</small></div>
+            </article>
+            <article class="summary__item summary__item--danger">
+                <span class="summary__number">{{ conteos['Sin certificado'] }}</span>
+                <div><strong>Sin certificado</strong><small>Asistencia menor a 80%</small></div>
+            </article>
+            <article class="summary__item summary__item--neutral">
+                <span class="summary__number">{{ total_resultados }}</span>
+                <div><strong>Registros evaluados</strong><small>Incluye incidencias por revisar</small></div>
+            </article>
+        </section>
+
+        <section class="registry" aria-labelledby="titulo-registro">
+            <header class="registry__header">
+                <div>
+                    <h2 id="titulo-registro">Registro de resultados</h2>
+                    <p><span id="visibleCount">{{ total_resultados }}</span> registros visibles</p>
+                </div>
+                <form class="filters" method="get" action="/" aria-label="Filtros del registro">
+                    <label>
+                        <span>Programa</span>
+                        <select name="programa" id="programa">
+                            <option value="todos" {% if programa_actual == 'todos' %}selected{% endif %}>Todos los programas</option>
+                            {% for programa in programas %}
+                            <option value="{{ programa }}" {% if programa_actual == programa %}selected{% endif %}>{{ programa }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                    <label>
+                        <span>Certificado</span>
+                        <select id="tipo">
+                            <option value="todos">Todos los tipos</option>
+                            <option value="Aprobación">Aprobación</option>
+                            <option value="Participación">Participación</option>
+                            <option value="Sin certificado">Sin certificado</option>
+                        </select>
+                    </label>
+                    <label class="filters__search">
+                        <span>Buscar estudiante</span>
+                        <input id="search" type="search" placeholder="Nombre o identificación" autocomplete="off">
+                    </label>
+                    <noscript><button type="submit">Aplicar</button></noscript>
+                </form>
+            </header>
+
+            <div class="table-wrap" role="region" aria-label="Resultados de estudiantes" tabindex="0">
+                <table class="registry-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Estudiante</th>
+                            <th scope="col">Programa</th>
+                            <th scope="col" class="numeric">Módulos</th>
+                            <th scope="col" class="numeric">Promedio</th>
+                            <th scope="col" class="numeric">Asistencia</th>
+                            <th scope="col">Certificado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                        {% for r in resultados %}
+                        <tr data-result-row data-nombre="{{ r.nombre|lower }}" data-identificacion="{{ r.identificacion }}" data-tipo="{{ r.tipo_certificado }}" {% if not r.en_maestro %}class="row-warning"{% endif %}>
+                            <td>
+                                <div class="student">
+                                    <span class="student__monogram" aria-hidden="true">{{ r.nombre[0] }}</span>
+                                    <div>
+                                        <strong>{{ r.nombre }}</strong>
+                                        <small>ID {{ r.identificacion }}</small>
+                                        {% if not r.en_maestro %}<span class="data-warning">No existe en el maestro</span>{% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="program-name">{{ r.programa }}</span></td>
+                            <td class="numeric">{{ r.modulos_cursados }}</td>
+                            <td class="numeric"><strong>{{ "%.2f"|format(r.promedio) }}</strong></td>
+                            <td class="numeric">{{ "%.2f"|format(r.asistencia_promedio) }}%</td>
+                            <td><span class="certificate certificate--{{ r.tipo_certificado|lower|replace(' ', '-')|replace('ó','o') }}">{{ r.tipo_certificado }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="empty-state" id="emptyState" hidden>
+                    <strong>No hay coincidencias</strong>
+                    <p>Cambia el tipo de certificado o escribe otro nombre.</p>
+                    <button type="button" id="clearFilters">Limpiar filtros</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="issues" aria-labelledby="titulo-incidencias">
+            <header class="issues__heading">
+                <div>
+                    <h2 id="titulo-incidencias">Incidencias que requieren revisión</h2>
+                    <p>Estos registros deben resolverse antes de emitir documentos.</p>
+                </div>
+                <span class="issues__total">{{ inconsistencias.sin_evaluaciones|length + inconsistencias.sin_maestro|length }} pendientes</span>
+            </header>
+            <div class="issues__grid">
+                <article class="issue">
+                    <header><span class="issue__mark issue__mark--gold">!</span><div><h3>Estudiantes sin evaluaciones</h3><p>{{ inconsistencias.sin_evaluaciones|length }} registro(s)</p></div></header>
+                    {% if inconsistencias.sin_evaluaciones %}
+                    <ul>
+                        {% for inc in inconsistencias.sin_evaluaciones %}
+                        <li><div><strong>{{ inc.nombre }}</strong><small>ID {{ inc.identificacion }} · {{ inc.programa }}</small></div><span>No emitir</span></li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}<p class="issue__clear">Sin incidencias en esta categoría.</p>{% endif %}
+                </article>
+                <article class="issue">
+                    <header><span class="issue__mark issue__mark--red">×</span><div><h3>Evaluaciones sin estudiante</h3><p>{{ inconsistencias.sin_maestro|length }} registro(s)</p></div></header>
+                    {% if inconsistencias.sin_maestro %}
+                    <ul>
+                        {% for inc in inconsistencias.sin_maestro %}
+                        <li><div><strong>ID {{ inc.identificacion }}</strong><small>{{ inc.programa }} · {{ inc.modulos }} módulos · Prom. {{ inc.promedio }}</small></div><span>Verificar</span></li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}<p class="issue__clear">Sin incidencias en esta categoría.</p>{% endif %}
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="shell"><strong>Academia Horizonte</strong><span>Registro académico · Cohorte 2026-A</span><a href="/health">Estado del sistema</a></div>
+    </footer>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
